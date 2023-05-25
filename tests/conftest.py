@@ -30,7 +30,7 @@ def event_loop() -> Generator[AbstractEventLoop, None, None]:
 
 
 #
-@pytest_asyncio.fixture(scope="session")
+@pytest_asyncio.fixture(scope="function")
 async def db_session(session_mocker) -> AsyncGenerator[AsyncSession, None]:
     engine = create_async_engine("sqlite+aiosqlite://", poolclass=StaticPool)
     session_mocker.patch(
@@ -46,12 +46,11 @@ async def db_session(session_mocker) -> AsyncGenerator[AsyncSession, None]:
         trans = await db_session.begin()
 
         yield db_session
-
         # Rollback the transaction after the test is done
         await trans.rollback()
 
 
-@pytest_asyncio.fixture(scope="session")
+@pytest_asyncio.fixture(scope="function")
 async def get_db_session(db_session: AsyncSession):
     async def _get_db_session():
         yield db_session
@@ -69,3 +68,8 @@ async def api_client():
 def repositories_registry():
     repositories_registry = RepositoriesRegistry(user_repository=UserRepository)
     return repositories_registry
+
+
+@pytest_asyncio.fixture(scope="function")
+async def user_repo(db_session: AsyncSession):
+    return UserRepository(db_session)

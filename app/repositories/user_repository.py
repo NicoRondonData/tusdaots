@@ -56,13 +56,8 @@ class UserRepository:
         Returns:
             UserResponse: The response containing the username of the added user.
         """
-        print("nicoo")
-        print(data)
         hashed_pwd = auth_handler.get_password_hash(data.password)
         new_user = UserModel(username=data.username, password=hashed_pwd)
-        print(new_user)
         self.session.add(new_user)
-        print("cool")
         await self.session.flush()
-        print("nenaaaa")
         return UserResponse(username=new_user.username)
