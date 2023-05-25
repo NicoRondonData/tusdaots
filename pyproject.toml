@@ -17,6 +17,12 @@ sqlmodel = "^0.0.8"
 passlib = "^1.7.4"
 pyjwt = "^2.7.0"
 pydantic = {extras = ["email"], version = "^1.10.8"}
+greenlet = "^2.0.2"
+pytest-asyncio = "^0.21.0"
+bcrypt = "^4.0.1"
+asgi-lifespan = "^2.1.0"
+pytest-mock = "^3.10.0"
+aiosqlite = "^0.19.0"
 
 [tool.poetry.group.linters.dependencies]
 ruff = "^0.0.270"

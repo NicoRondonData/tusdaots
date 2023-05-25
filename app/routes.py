@@ -1,13 +1,12 @@
 from fastapi import APIRouter, Depends
 
-from app.users.auth import auth_handler
 from app.users.services import get_add_user_status, get_login_user_status
 
 router = APIRouter(prefix="/tusdatos")
 
 
 @router.get("/livez")
-async def liveness_probe(user=Depends(auth_handler.get_current_user)):
+async def liveness_probe():
     return {"liveness": "True"}
 
 
