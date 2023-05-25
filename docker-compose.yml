@@ -9,6 +9,7 @@ services:
     ports:
       - "8043:8043"
     environment:
+      - DATABASE_HOST=postgresql+asyncpg://postgres:postgres@tusdatos-db:5432/tusdatos
       - DATABASE_URL=postgresql+asyncpg://postgres:postgres@tusdatos-db:5432/tusdatos
   tusdatos-db:
     image: postgres:14
