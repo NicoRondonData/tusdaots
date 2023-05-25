@@ -1,0 +1,52 @@
+[tool.poetry]
+name = "tusdatos"
+version = "0.1.0"
+description = ""
+authors = ["Nicolás Eduardo Rondón Ortiz <nrondon@ucompensar.edu.co>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.95.2"
+uvicorn = "^0.22.0"
+httpx = "^0.24.1"
+alembic = "^1.11.1"
+asyncpg = "^0.27.0"
+psycopg2-binary = "^2.9.6"
+sqlmodel = "^0.0.8"
+
+[tool.poetry.group.linters.dependencies]
+ruff = "^0.0.270"
+pre-commit = "^3.3.2"
+isort = "^5.10.1"
+black = "23.1.0"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.3.1"
+pytest-cov = "^4.1.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+
+[tool.ruff]
+line-length = 79
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+
+]
+ignore = [
+    "E501",  # line too long, handled by black
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+]
+exclude = ["migrations"]
+[tool.ruff.pydocstyle]
+convention = "google"

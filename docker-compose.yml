@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  tusdatos:
+    container_name: tusdatos-dev
+    build:
+      target: development
+    volumes:
+      - .:/app
+    ports:
+      - "8043:8043"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@tusdatos-db:5432/tusdatos
+  tusdatos-db:
+    image: postgres:14
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=tusdatos
+    healthcheck:
+      test: "exit 0"
