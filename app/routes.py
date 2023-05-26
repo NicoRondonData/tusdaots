@@ -1,7 +1,9 @@
 from fastapi import APIRouter, BackgroundTasks, Depends, Request
 
+from app.db import get_session
 from app.scrapers.judical_processes.entities import ProcessEnum
 from app.scrapers.judical_processes.use_case import get_data_from_judicial_processes
+from app.users.auth import auth_handler
 from app.users.services import get_add_user_status, get_login_user_status
 
 router = APIRouter(prefix="/tusdatos")
@@ -48,8 +50,8 @@ async def login(response: dict = Depends(get_login_user_status)):
     return response
 
 
-@router.post("/get-data-plaintiff/{process}")
-async def get_data_plaintiff(
+@router.post("/get-data/{process}")
+async def get_data(
     process: ProcessEnum,
     background_tasks: BackgroundTasks,
     request: Request,
@@ -70,3 +72,27 @@ async def get_data_plaintiff(
 
     """
     return response
+
+
+@router.post("/get-info")
+async def get_info(
+    request: Request,
+    db_session=Depends(get_session),
+    user=Depends(auth_handler.get_current_user),
+):
+    result = await request.app.repositories_registry.judicial_case_repository(
+        db_session
+    ).get_all()
+    return list(result)
+
+
+@router.post("/get-info-details")
+async def get_info_details(
+    request: Request,
+    db_session=Depends(get_session),
+    user=Depends(auth_handler.get_current_user),
+):
+    result = await request.app.repositories_registry.judicial_case_repository(
+        db_session
+    ).get_all_info()
+    return list(result)

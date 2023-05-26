@@ -68,3 +68,44 @@ class JudicialCase(BaseModel):
         """
         if value is not None:
             return datetime.fromisoformat(value)
+
+
+class CaseModel(BaseModel):
+    id: str = Field(alias="id")
+    case_id: str = Field(alias="idJuicio")
+    current_status: Optional[str] = Field(alias="estadoActual")
+    subject_id: Optional[int] = Field(alias="idMateria")
+    province_id: Optional[str] = Field(alias="idProvincia")
+    canton_id: Optional[str] = Field(alias="idCanton")
+    judicature_id: Optional[str] = Field(alias="idJudicatura")
+    crime_name: str = Field(alias="nombreDelito")
+    entry_date: datetime = Field(alias="fechaIngreso")
+    has_attached_document: str = Field(alias="iEDocumentoAdjunto")
+    name: Optional[str] = Field(alias="nombre")
+    id_card: Optional[str] = Field(alias="cedula")
+    case_status_id: Optional[str] = Field(alias="idEstadoJuicio")
+    subject_name: str = Field(alias="nombreMateria")
+    case_status_name: Optional[str] = Field(alias="nombreEstadoJuicio")
+    judicature_name: Optional[str] = Field(alias="nombreJudicatura")
+    resolution_type_name: Optional[str] = Field(alias="nombreTipoResolucion")
+    action_type_name: str = Field(alias="nombreTipoAccion")
+    provision_date: Optional[str] = Field(alias="fechaProvidencia")
+    provision_name: Optional[str] = Field(alias="nombreProvidencia")
+    province_name: Optional[str] = Field(alias="nombreProvincia")
+    user_id: Optional[str]
+    process: Optional[ProcessEnum] = Field(default=None, alias="proceso")
+
+    @validator("entry_date", "provision_date", pre=True)
+    def parse_datetime(cls, value):
+        """
+        Validator to parse datetime values.
+
+        Args:
+            value: The datetime value.
+
+        Returns:
+            Optional[datetime]: The parsed datetime value or None if parsing fails.
+
+        """
+        if value is not None:
+            return datetime.fromisoformat(value)

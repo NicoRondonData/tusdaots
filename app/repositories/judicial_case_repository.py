@@ -1,9 +1,9 @@
 from typing import List
 
-from sqlmodel import Session
+from sqlmodel import Session, select
 
-from app.scrapers.judical_processes.entities import JudicialCase
-from app.scrapers.judical_processes.models import JudicialCaseModel
+from app.scrapers.judical_processes.entities import CaseModel, JudicialCase
+from app.scrapers.judical_processes.models import Case, JudicialCaseModel
 
 
 class JudicialCaseRepository:
@@ -50,4 +50,54 @@ class JudicialCaseRepository:
         ]
 
         self.session.add_all(objects)
+        await self.session.commit()
+
+    async def get_all(self) -> List[JudicialCaseModel]:
+        """
+        Retrieve all users.
+
+        Returns:
+            List[UserModel]: A list of all user records.
+        """
+        statement = select(JudicialCaseModel)
+        results = await self.session.execute(statement)
+        return results
+
+    async def get_all_info(self) -> List[Case]:
+        """
+        Retrieve all users.
+
+        Returns:
+            List[UserModel]: A list of all user records.
+        """
+        statement = select(Case)
+        results = await self.session.execute(statement)
+        return results
+
+    async def add(self, data: CaseModel, model):
+        new_data = Case(
+            id=data.id,
+            case_id=data.case_id,
+            current_status=data.current_status,
+            subject_id=data.subject_id,
+            province_id=data.province_id,
+            canton_id=data.canton_id,
+            judicature_id=data.judicature_id,
+            crime_name=data.crime_name,
+            entry_date=data.entry_date,
+            has_attached_document=data.has_attached_document,
+            name=data.name,
+            id_card=data.id_card,
+            case_status_id=data.case_status_id,
+            subject_name=data.subject_name,
+            case_status_name=data.case_status_name,
+            judicature_name=data.judicature_name,
+            resolution_type_name=data.resolution_type_name,
+            action_type_name=data.action_type_name,
+            provision_date=data.provision_date,
+            provision_name=data.provision_name,
+            province_name=data.province_name,
+            user_id=data.user_id,
+        )
+        self.session.add(new_data)
         await self.session.commit()

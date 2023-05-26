@@ -4,31 +4,46 @@ from app.base.settings import get_settings
 
 # from app.main import app
 from app.scrapers.base import Service
-from app.scrapers.judical_processes.entities import Case, JudicialCase, ProcessEnum
+from app.scrapers.judical_processes.entities import CaseModel, JudicialCase, ProcessEnum
+from app.scrapers.judical_processes.models import Case
 
-
-async def insert_data_into_table(data_list: list, request: Request, db_session):
-    """
-    Insert the data into the corresponding table.
-
-    Args:
-        data_list (list): List of data to insert.
-        request (Request): FastAPI Request object.
-        db_session: Database session.
-
-    Returns:
-        None
-    """
-    judicial_cases = [JudicialCase(**data) for data in data_list]
-    await request.app.repositories_registry.judicial_case_repository(
-        db_session
-    ).bulk_insert(judicial_cases)
+#
 
 
 class JudicialProcessesService(Service):
     def __init__(self):
         super().__init__()
         self.api_url = get_settings().judicial_processes_api
+
+    async def insert_data_into_table(
+        self, data_list: list, request: Request, db_session
+    ):
+        """
+        Insert the data into the corresponding table.
+
+        Args:
+            data_list (list): List of data to insert.
+            request (Request): FastAPI Request object.
+            db_session: Database session.
+
+        Returns:
+            None
+        """
+        # data_list = data_list[:3]
+        judicial_cases = [JudicialCase(**data) for data in data_list]
+
+        await request.app.repositories_registry.judicial_case_repository(
+            db_session
+        ).bulk_insert(judicial_cases)
+        for case in judicial_cases:
+            if case.judicial_case_id:
+                result = await self.get_info_juicio(case.judicial_case_id)
+                for r in result:
+                    r["user_id"] = case.user_id
+                    data = CaseModel(**r)
+                    await request.app.repositories_registry.judicial_case_repository(
+                        db_session
+                    ).add(data, Case)
 
     async def get_number_of_cases(self, data: Case):
         """
@@ -84,6 +99,14 @@ class JudicialProcessesService(Service):
             {**r, "proceso": process, "user_id": user_id} for r in total_response
         ]
         background_tasks.add_task(
-            insert_data_into_table, format_result, request, db_session
+            self.insert_data_into_table, format_result, request, db_session
         )
         return {"data": format_result, "count": number_of_cases}
+
+    async def get_info_incidente_juicio(self):
+        pass
+
+    async def get_info_juicio(self, process_id: str):
+        url = self.api_url + "getInformacionJuicio/" + process_id
+        response = self.client.get(url)
+        return response.json()

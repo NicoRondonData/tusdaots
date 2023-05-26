@@ -77,3 +77,20 @@ async def test_login_success(api_client, get_db_session):
         },
     )
     assert response.status_code == status.HTTP_200_OK
+
+
+@pytest.mark.asyncio
+async def test_get_data(api_client, get_db_session):
+    response = await api_client.post(
+        "/tusdatos/get-data/demandante",
+        json={
+            "numeroCausa": "",
+            "actor": {"cedulaActor": "1791251237001", "nombreActor": ""},
+            "demandado": {"cedulaDemandado": "", "nombreDemandado": ""},
+            "provincia": "",
+            "numeroFiscalia": "",
+            "recaptcha": "",
+        },
+    )
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.json()["response"]["detail"]) > 1

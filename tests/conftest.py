@@ -13,6 +13,7 @@ from sqlmodel.pool import StaticPool
 
 from app.db import get_session
 from app.main import app
+from app.repositories.judicial_case_repository import JudicialCaseRepository
 from app.repositories.register import RepositoriesRegistry
 from app.repositories.user_repository import UserRepository
 
@@ -73,3 +74,8 @@ def repositories_registry():
 @pytest_asyncio.fixture(scope="function")
 async def user_repo(db_session: AsyncSession):
     return UserRepository(db_session)
+
+
+@pytest_asyncio.fixture(scope="function")
+async def judicial_repo(db_session: AsyncSession):
+    return JudicialCaseRepository(db_session)

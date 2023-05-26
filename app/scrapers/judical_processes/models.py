@@ -88,3 +88,53 @@ class JudicialCaseModel(SQLModel, table=True):
             return dt.replace(tzinfo=None)
         except ValueError:
             return None
+
+
+class Case(SQLModel, table=True):
+    key_id: Optional[int] = Field(
+        default=None,
+        primary_key=True,
+        nullable=False,
+        sa_column_kwargs={"autoincrement": True},
+    )
+    id: Optional[str]
+    case_id: Optional[str]
+    user_id: Optional[str]
+    current_status: Optional[str]
+    subject_id: Optional[int]
+    province_id: Optional[str]
+    canton_id: Optional[str]
+    judicature_id: Optional[str]
+    crime_name: Optional[str]
+    entry_date: Optional[datetime]
+    has_attached_document: Optional[str]
+    name: Optional[str]
+    id_card: Optional[str]
+    case_status_id: Optional[str]
+    subject_name: Optional[str]
+    case_status_name: Optional[str]
+    judicature_name: Optional[str]
+    resolution_type_name: Optional[str]
+    action_type_name: Optional[str]
+    provision_date: Optional[str]
+    provision_name: Optional[str]
+    province_name: Optional[str]
+    process: Optional[ProcessEnum] = Field(default=None, alias="proceso")
+
+    @validator("entry_date", "provision_date", pre=True)
+    def parse_datetime(cls, value):
+        """
+        Validator to parse datetime values.
+
+        Args:
+            value: The datetime value.
+
+        Returns:
+            Optional[datetime]: The parsed datetime value or None if parsing fails.
+
+        """
+        try:
+            dt = datetime.fromisoformat(value)
+            return dt.replace(tzinfo=None)
+        except ValueError:
+            return None
