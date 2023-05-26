@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, Field, validator
 
@@ -109,3 +109,8 @@ class CaseModel(BaseModel):
         """
         if value is not None:
             return datetime.fromisoformat(value)
+
+
+class ResponseDetail(BaseModel):
+    judicial: JudicialCase
+    cases: List[CaseModel]

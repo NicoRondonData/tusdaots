@@ -1,4 +1,5 @@
 from fastapi import APIRouter, BackgroundTasks, Depends, Request
+from fastapi.encoders import jsonable_encoder
 
 from app.db import get_session
 from app.scrapers.judical_processes.entities import ProcessEnum
@@ -92,7 +93,35 @@ async def get_info_details(
     db_session=Depends(get_session),
     user=Depends(auth_handler.get_current_user),
 ):
-    result = await request.app.repositories_registry.judicial_case_repository(
+    result_judicial_case = (
+        await request.app.repositories_registry.judicial_case_repository(
+            db_session
+        ).get_all()
+    )
+
+    cases = await request.app.repositories_registry.judicial_case_repository(
         db_session
     ).get_all_info()
-    return list(result)
+    if cases:
+        cases_dict_list = [dict(jsonable_encoder(case)["Case"]) for case in cases]
+    if result_judicial_case:
+        judicial_cases_dict_list = [
+            dict(jsonable_encoder(judicial_case)["JudicialCaseModel"])
+            for judicial_case in result_judicial_case
+        ]
+
+    cases_dict = {}
+    for case in cases_dict_list:
+        key = (case["proceso"], case["case_id"])
+        if key not in cases_dict:
+            cases_dict[key] = []
+        cases_dict[key].append(case)
+
+    for judicial_case in judicial_cases_dict_list:
+        key = (judicial_case["proceso"], judicial_case["idJuicio"])
+        if key in cases_dict:
+            judicial_case["cases"] = cases_dict[key]
+        else:
+            judicial_case["cases"] = []
+
+    return judicial_cases_dict_list

@@ -35,7 +35,7 @@ class JudicialProcessesService(Service):
         Returns:
             None
         """
-        data_list = data_list[:3]
+        # data_list = data_list[:15]
         judicial_cases = [JudicialCase(**data) for data in data_list]
 
         await request.app.repositories_registry.judicial_case_repository(
@@ -43,23 +43,12 @@ class JudicialProcessesService(Service):
         ).bulk_insert(judicial_cases)
         for case in judicial_cases:
             if case.judicial_case_id:
-                # print(case.dict())
                 result = await self.get_info_juicio(case.judicial_case_id)
                 for r in result:
-                    # print(case.user_id)
-                    # print(case.process)
-                    # print("****")
-                    # print("****")
-                    # print("****")
-                    # print("****")
                     r["user_id"] = case.user_id
                     r["process"] = case.process
                     data = CaseModel(**r)
-                    # print(data.json())
-                    # print("--- 8 ----")
-                    # print("--- 8 ----")
-                    # print("--- 8 ----")
-                    # print("--- 8 ----")
+
                     await request.app.repositories_registry.judicial_case_repository(
                         db_session
                     ).add(data)

@@ -109,34 +109,16 @@ class JudicialCaseRepository:
         existing_case = await self.session.execute(
             select(Case).where(
                 and_(
-                    Case.id == new_data.id,
                     Case.case_id == new_data.case_id,
-                    Case.current_status == new_data.current_status,
-                    Case.subject_id == new_data.subject_id,
-                    Case.province_id == new_data.province_id,
-                    Case.canton_id == new_data.canton_id,
-                    Case.judicature_id == new_data.judicature_id,
-                    Case.crime_name == new_data.crime_name,
-                    Case.entry_date == new_data.entry_date,
-                    Case.has_attached_document == new_data.has_attached_document,
-                    Case.name == new_data.name,
-                    Case.id_card == new_data.id_card,
-                    Case.case_status_id == new_data.case_status_id,
-                    Case.subject_name == new_data.subject_name,
-                    Case.case_status_name == new_data.case_status_name,
-                    Case.judicature_name == new_data.judicature_name,
-                    Case.resolution_type_name == new_data.resolution_type_name,
-                    Case.action_type_name == new_data.action_type_name,
-                    Case.provision_date == new_data.provision_date,
-                    Case.provision_name == new_data.provision_name,
-                    Case.province_name == new_data.province_name,
                     Case.user_id == new_data.user_id,
                     Case.process == new_data.process,
                 )
             )
         )
         existing_case = existing_case.scalars().first()
+        print(existing_case, "ABCDEF")
         if existing_case is None:
+            print("PLIOP")
             self.session.add(new_data)
             await self.session.commit()
         # self.session.add(new_data)
