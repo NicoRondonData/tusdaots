@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 
+from app.scrapers.judical_processes.use_case import get_data_from_judicial_processes
 from app.users.services import get_add_user_status, get_login_user_status
 
 router = APIRouter(prefix="/tusdatos")
@@ -43,4 +44,11 @@ async def login(response: dict = Depends(get_login_user_status)):
     Returns:
         dict: The status of the login.
     """
+    return response
+
+
+@router.post("/get-data-plaintiff")
+async def get_data_plaintiff(
+    response: dict = Depends(get_data_from_judicial_processes),
+):
     return response

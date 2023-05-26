@@ -24,6 +24,29 @@ async def test_register(api_client, get_db_session):
 
 
 @pytest.mark.asyncio
+async def test_fail_register_same_user(api_client, get_db_session):
+    await api_client.post(
+        "/tusdatos/register",
+        json={
+            "username": "string",
+            "password": "string",
+            "password2": "string",
+            "email": "user@example.com",
+        },
+    )
+    response = await api_client.post(
+        "/tusdatos/register",
+        json={
+            "username": "string",
+            "password": "string",
+            "password2": "string",
+            "email": "user@example.com",
+        },
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.asyncio
 async def test_login_fail_without_existing_user(api_client, get_db_session):
     response = await api_client.post(
         "/tusdatos/login",
