@@ -116,10 +116,6 @@ class JudicialCaseRepository:
             )
         )
         existing_case = existing_case.scalars().first()
-        print(existing_case, "ABCDEF")
         if existing_case is None:
-            print("PLIOP")
             self.session.add(new_data)
             await self.session.commit()
-        # self.session.add(new_data)
-        # await self.session.commit()

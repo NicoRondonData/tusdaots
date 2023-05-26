@@ -1,4 +1,5 @@
 import asyncio
+import json
 from asyncio.events import AbstractEventLoop
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator, Generator
@@ -6,6 +7,7 @@ from typing import AsyncGenerator, Generator
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient
+from pytest_mock import MockerFixture
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlmodel import SQLModel
@@ -79,3 +81,33 @@ async def user_repo(db_session: AsyncSession):
 @pytest_asyncio.fixture(scope="function")
 async def judicial_repo(db_session: AsyncSession):
     return JudicialCaseRepository(db_session)
+
+
+@pytest.fixture()
+def mock_check_get_info(mocker: MockerFixture):
+    def _mock_check_get_info(json_file_path):
+        # Load JSON file
+        with open(json_file_path, "r") as f:
+            return_value = json.load(f)
+
+        mocker.patch(
+            "app.scrapers.judical_processes.service.JudicialProcessesService.get_info",
+            return_value=return_value,
+        )
+
+    return _mock_check_get_info
+
+
+@pytest.fixture()
+def mock_check_get_info_detail(mocker: MockerFixture):
+    def _mock_check_get_info_detail(json_file_path):
+        # Load JSON file
+        with open(json_file_path, "r") as f:
+            return_value = json.load(f)
+
+        mocker.patch(
+            "app.scrapers.judical_processes.service.JudicialProcessesService.get_info_juicio",
+            return_value=return_value,
+        )
+
+    return _mock_check_get_info_detail

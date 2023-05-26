@@ -1,0 +1,23 @@
+[{
+	"id": 1,
+	"idJuicio": "23303202300348G",
+	"estadoActual": null,
+	"idMateria": 27,
+	"idProvincia": null,
+	"idCanton": null,
+	"idJudicatura": null,
+	"nombreDelito": "ARCHIVO DE LA INVESTIGACIÓN PREVIA ART. 586",
+	"fechaIngreso": "2023-05-02T15:28:09.050+00:00",
+	"iEDocumentoAdjunto": "N",
+	"nombre": null,
+	"cedula": null,
+	"idEstadoJuicio": null,
+	"nombreMateria": "PENAL COIP",
+	"nombreEstadoJuicio": null,
+	"nombreJudicatura": null,
+	"nombreTipoResolucion": null,
+	"nombreTipoAccion": "INVESTIGACIÓN PREVIA",
+	"fechaProvidencia": null,
+	"nombreProvidencia": null,
+	"nombreProvincia": null
+}]

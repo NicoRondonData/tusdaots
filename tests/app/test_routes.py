@@ -80,7 +80,11 @@ async def test_login_success(api_client, get_db_session):
 
 
 @pytest.mark.asyncio
-async def test_get_data(api_client, get_db_session):
+async def test_get_data(
+    api_client, get_db_session, mock_check_get_info, mock_check_get_info_detail
+):
+    mock_check_get_info("tests/data/data.json")
+    mock_check_get_info_detail("tests/data/detail.json")
     response = await api_client.post(
         "/tusdatos/get-data/demandante",
         json={
