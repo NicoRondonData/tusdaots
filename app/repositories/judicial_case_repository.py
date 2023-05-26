@@ -74,7 +74,17 @@ class JudicialCaseRepository:
         results = await self.session.execute(statement)
         return results
 
-    async def add(self, data: CaseModel, model):
+    async def add(self, data: CaseModel):
+        # print("alla")
+        # print("alla")
+        # print("alla")
+        # print(data.user_id)
+        # print(data.process)
+        # print("aquiii")
+        # print("aquiii")
+        # print("aquiii")
+        # print("miralo antes")
+        # print(data.json())
         new_data = Case(
             id=data.id,
             case_id=data.case_id,
@@ -98,6 +108,7 @@ class JudicialCaseRepository:
             provision_name=data.provision_name,
             province_name=data.province_name,
             user_id=data.user_id,
+            proceso=data.process,
         )
         self.session.add(new_data)
         await self.session.commit()

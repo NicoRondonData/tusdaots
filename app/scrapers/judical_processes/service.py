@@ -4,8 +4,14 @@ from app.base.settings import get_settings
 
 # from app.main import app
 from app.scrapers.base import Service
-from app.scrapers.judical_processes.entities import CaseModel, JudicialCase, ProcessEnum
-from app.scrapers.judical_processes.models import Case
+from app.scrapers.judical_processes.entities import (
+    Case,
+    CaseModel,
+    JudicialCase,
+    ProcessEnum,
+)
+
+# from app.scrapers.judical_processes.models import Case
 
 #
 
@@ -29,7 +35,7 @@ class JudicialProcessesService(Service):
         Returns:
             None
         """
-        # data_list = data_list[:3]
+        data_list = data_list[:3]
         judicial_cases = [JudicialCase(**data) for data in data_list]
 
         await request.app.repositories_registry.judicial_case_repository(
@@ -37,13 +43,26 @@ class JudicialProcessesService(Service):
         ).bulk_insert(judicial_cases)
         for case in judicial_cases:
             if case.judicial_case_id:
+                # print(case.dict())
                 result = await self.get_info_juicio(case.judicial_case_id)
                 for r in result:
+                    # print(case.user_id)
+                    # print(case.process)
+                    # print("****")
+                    # print("****")
+                    # print("****")
+                    # print("****")
                     r["user_id"] = case.user_id
+                    r["process"] = case.process
                     data = CaseModel(**r)
+                    # print(data.json())
+                    # print("--- 8 ----")
+                    # print("--- 8 ----")
+                    # print("--- 8 ----")
+                    # print("--- 8 ----")
                     await request.app.repositories_registry.judicial_case_repository(
                         db_session
-                    ).add(data, Case)
+                    ).add(data)
 
     async def get_number_of_cases(self, data: Case):
         """
@@ -71,7 +90,7 @@ class JudicialProcessesService(Service):
         Get the data of the plaintiff or defendant based on the specified data.
 
         Args:
-            data (Case): Case data.
+            data (JudicialCase): JudicialCase data.
             process (ProcessEnum): Type of process.
             background_tasks (BackgroundTasks): FastAPI BackgroundTasks object.
             request (Request): FastAPI Request object.
@@ -96,7 +115,7 @@ class JudicialProcessesService(Service):
             return {"data": [], "count": number_of_cases}
 
         format_result = [
-            {**r, "proceso": process, "user_id": user_id} for r in total_response
+            {**r, "proceso": process, "idUsuario": user_id} for r in total_response
         ]
         background_tasks.add_task(
             self.insert_data_into_table, format_result, request, db_session

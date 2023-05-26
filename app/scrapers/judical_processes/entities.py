@@ -92,8 +92,8 @@ class CaseModel(BaseModel):
     provision_date: Optional[str] = Field(alias="fechaProvidencia")
     provision_name: Optional[str] = Field(alias="nombreProvidencia")
     province_name: Optional[str] = Field(alias="nombreProvincia")
-    user_id: Optional[str]
-    process: Optional[ProcessEnum] = Field(default=None, alias="proceso")
+    user_id: Optional[str] = Field(alias="user_id")
+    process: Optional[ProcessEnum] = Field(default=None, alias="process")
 
     @validator("entry_date", "provision_date", pre=True)
     def parse_datetime(cls, value):
