@@ -1,5 +1,6 @@
 from typing import List
 
+from sqlalchemy import and_
 from sqlmodel import Session, select
 
 from app.scrapers.judical_processes.entities import CaseModel, JudicialCase
@@ -20,6 +21,9 @@ class JudicialCaseRepository:
         Returns:
             None
         """
+        existing_ids_statement = select(JudicialCaseModel.id_process)
+        result = await self.session.execute(existing_ids_statement)
+        existing_ids = {case.id_process for case in result}
         objects = [
             JudicialCaseModel(
                 id=case.id_process,
@@ -47,6 +51,7 @@ class JudicialCaseRepository:
                 idUsuario=case.user_id,
             )
             for case in cases
+            if case.id_process not in existing_ids
         ]
 
         self.session.add_all(objects)
@@ -75,16 +80,6 @@ class JudicialCaseRepository:
         return results
 
     async def add(self, data: CaseModel):
-        # print("alla")
-        # print("alla")
-        # print("alla")
-        # print(data.user_id)
-        # print(data.process)
-        # print("aquiii")
-        # print("aquiii")
-        # print("aquiii")
-        # print("miralo antes")
-        # print(data.json())
         new_data = Case(
             id=data.id,
             case_id=data.case_id,
@@ -110,5 +105,39 @@ class JudicialCaseRepository:
             user_id=data.user_id,
             proceso=data.process,
         )
-        self.session.add(new_data)
-        await self.session.commit()
+
+        existing_case = await self.session.execute(
+            select(Case).where(
+                and_(
+                    Case.id == new_data.id,
+                    Case.case_id == new_data.case_id,
+                    Case.current_status == new_data.current_status,
+                    Case.subject_id == new_data.subject_id,
+                    Case.province_id == new_data.province_id,
+                    Case.canton_id == new_data.canton_id,
+                    Case.judicature_id == new_data.judicature_id,
+                    Case.crime_name == new_data.crime_name,
+                    Case.entry_date == new_data.entry_date,
+                    Case.has_attached_document == new_data.has_attached_document,
+                    Case.name == new_data.name,
+                    Case.id_card == new_data.id_card,
+                    Case.case_status_id == new_data.case_status_id,
+                    Case.subject_name == new_data.subject_name,
+                    Case.case_status_name == new_data.case_status_name,
+                    Case.judicature_name == new_data.judicature_name,
+                    Case.resolution_type_name == new_data.resolution_type_name,
+                    Case.action_type_name == new_data.action_type_name,
+                    Case.provision_date == new_data.provision_date,
+                    Case.provision_name == new_data.provision_name,
+                    Case.province_name == new_data.province_name,
+                    Case.user_id == new_data.user_id,
+                    Case.process == new_data.process,
+                )
+            )
+        )
+        existing_case = existing_case.scalars().first()
+        if existing_case is None:
+            self.session.add(new_data)
+            await self.session.commit()
+        # self.session.add(new_data)
+        # await self.session.commit()
