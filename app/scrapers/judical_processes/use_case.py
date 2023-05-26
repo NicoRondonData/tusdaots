@@ -15,6 +15,20 @@ async def get_data_from_judicial_processes(
     request: Request,
     session=Depends(get_session),
 ) -> Dict:
+    """
+    Retrieve data from the judicial processes API.
+
+    Args:
+        data (Case): Case data.
+        process (ProcessEnum): Process type.
+        background_tasks (BackgroundTasks): Background tasks.
+        request (Request): FastAPI request object.
+        session: Database session (dependency injection).
+
+    Returns:
+        Dict: Data from the judicial processes API.
+
+    """
     client = JudicialProcessesService()
     result = await client.get_data_demandante_demandado(
         data=data,
@@ -32,6 +46,17 @@ async def get_data_from_judicial_processes(
 def get_data_from_judicial_processes_status(
     response: Response, status_get_data_response: Dict
 ):
+    """
+    Set the status and response data for the get_data_from_judicial_processes endpoint.
+
+    Args:
+        response (Response): FastAPI response object.
+        status_get_data_response (Dict): Status and response data.
+
+    Returns:
+        dict: Response body.
+
+    """
     response_body = response_message()
 
     if status_get_data_response["status_code"] != status.HTTP_200_OK:

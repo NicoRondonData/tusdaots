@@ -8,6 +8,17 @@ from app.scrapers.judical_processes.entities import Case, JudicialCase, ProcessE
 
 
 async def insert_data_into_table(data_list: list, request: Request, db_session):
+    """
+    Insert the data into the corresponding table.
+
+    Args:
+        data_list (list): List of data to insert.
+        request (Request): FastAPI Request object.
+        db_session: Database session.
+
+    Returns:
+        None
+    """
     judicial_cases = [JudicialCase(**data) for data in data_list]
     await request.app.repositories_registry.judicial_case_repository(
         db_session
@@ -20,6 +31,15 @@ class JudicialProcessesService(Service):
         self.api_url = get_settings().judicial_processes_api
 
     async def get_number_of_cases(self, data: Case):
+        """
+        Get the number of cases based on the specified data.
+
+        Args:
+            data (Case): Case data.
+
+        Returns:
+            dict: API response with the number of cases.
+        """
         url = self.api_url + "contarCausas"
         response = self.client.post(url=url, json=data.dict(by_alias=True))
         return response.json()
@@ -32,6 +52,19 @@ class JudicialProcessesService(Service):
         request: Request,
         db_session,
     ) -> dict:
+        """
+        Get the data of the plaintiff or defendant based on the specified data.
+
+        Args:
+            data (Case): Case data.
+            process (ProcessEnum): Type of process.
+            background_tasks (BackgroundTasks): FastAPI BackgroundTasks object.
+            request (Request): FastAPI Request object.
+            db_session: Database session.
+
+        Returns:
+            dict: Response with the formatted data and the count of cases.
+        """
         number_of_cases = await self.get_number_of_cases(data)
         user_id = None
         if data.defendant:

@@ -55,4 +55,18 @@ async def get_data_plaintiff(
     request: Request,
     response: dict = Depends(get_data_from_judicial_processes),
 ):
+    """
+    Endpoint to retrieve data for the plaintiff from the judicial processes API.
+
+    Args:
+        process (ProcessEnum): Process type.
+        background_tasks (BackgroundTasks): Background tasks.
+        request (Request): FastAPI request object.
+        response (dict, optional): Response data from get_data_from_judicial_processes.
+            Defaults to Depends(get_data_from_judicial_processes).
+
+    Returns:
+        dict: Response data.
+
+    """
     return response

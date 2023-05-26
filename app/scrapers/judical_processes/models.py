@@ -45,14 +45,44 @@ class JudicialCaseModel(SQLModel, table=True):
 
     @classmethod
     def from_pydantic(cls, data):
+        """
+        Create a JudicialCaseModel instance from a Pydantic JudicialCase object.
+
+        Args:
+            data: The Pydantic JudicialCase object.
+
+        Returns:
+            JudicialCaseModel: The created JudicialCaseModel instance.
+
+        """
         return cls(**data.dict())
 
     @classmethod
     def to_pydantic(cls, instance):
+        """
+        Convert a JudicialCaseModel instance to a Pydantic JudicialCase object.
+
+        Args:
+            instance (JudicialCaseModel): The JudicialCaseModel instance.
+
+        Returns:
+            JudicialCase: The converted Pydantic JudicialCase object.
+
+        """
         return JudicialCase(**instance.dict())
 
     @validator("date_of_filing", "provision_date", pre=True)
     def parse_datetime(cls, value):
+        """
+        Validator to parse datetime values.
+
+        Args:
+            value: The datetime value.
+
+        Returns:
+            Optional[datetime]: The parsed datetime value or None if parsing fails.
+
+        """
         try:
             dt = datetime.fromisoformat(value)
             return dt.replace(tzinfo=None)

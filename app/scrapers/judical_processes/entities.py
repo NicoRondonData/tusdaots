@@ -56,5 +56,15 @@ class JudicialCase(BaseModel):
 
     @validator("date_of_filing", "provision_date", pre=True)
     def parse_datetime(cls, value):
+        """
+        Validator to parse datetime values.
+
+        Args:
+            value: The datetime value.
+
+        Returns:
+            Optional[datetime]: The parsed datetime value or None if parsing fails.
+
+        """
         if value is not None:
             return datetime.fromisoformat(value)

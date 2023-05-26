@@ -11,6 +11,15 @@ class JudicialCaseRepository:
         self.session = session
 
     async def bulk_insert(self, cases: List[JudicialCase]):
+        """
+        Bulk insert a list of JudicialCase objects into the database.
+
+        Args:
+            cases (List[JudicialCase]): List of JudicialCase objects to insert.
+
+        Returns:
+            None
+        """
         objects = [
             JudicialCaseModel(
                 id=case.id_process,
