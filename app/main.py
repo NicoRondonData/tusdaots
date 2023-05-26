@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.db import get_session, init_db
+from app.repositories.judicial_case_repository import JudicialCaseRepository
 from app.repositories.register import RepositoriesRegistry
 from app.repositories.user_repository import UserRepository
 from app.routes import router
@@ -12,7 +13,8 @@ class TusDatosApp(FastAPI):
         super().__init__(*args, **kwargs)
 
         self.repositories_registry = RepositoriesRegistry(
-            user_repository=UserRepository
+            user_repository=UserRepository,
+            judicial_case_repository=JudicialCaseRepository,
         )
 
         self.get_db_session = get_session

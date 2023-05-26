@@ -14,3 +14,6 @@ class RepositoryInterface(Protocol):
 
     def add(self, value: Union[UserInput]) -> T:
         ...
+
+    def inset_bulk(self, data: List[T]):
+        ...

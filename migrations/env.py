@@ -7,6 +7,7 @@ from sqlalchemy import engine_from_config, pool
 from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlmodel import SQLModel
 
+from app.scrapers.judical_processes.models import JudicialCaseModel
 from app.users.models import UserModel
 
 # this is the Alembic Config object, which provides

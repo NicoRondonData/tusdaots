@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, BackgroundTasks, Depends, Request
 
+from app.scrapers.judical_processes.entities import ProcessEnum
 from app.scrapers.judical_processes.use_case import get_data_from_judicial_processes
 from app.users.services import get_add_user_status, get_login_user_status
 
@@ -47,8 +48,11 @@ async def login(response: dict = Depends(get_login_user_status)):
     return response
 
 
-@router.post("/get-data-plaintiff")
+@router.post("/get-data-plaintiff/{process}")
 async def get_data_plaintiff(
+    process: ProcessEnum,
+    background_tasks: BackgroundTasks,
+    request: Request,
     response: dict = Depends(get_data_from_judicial_processes),
 ):
     return response
